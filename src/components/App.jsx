@@ -5,11 +5,24 @@ import Filter from './Filter';
 import shortid from 'shortid';
 import { H1, H2, Message } from './App/App.styled';
 
+const LS_KEY = 'CONTACTS';
+
 export class App extends Component {
   state = {
     contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem(LS_KEY);
+    if (savedContacts) this.setState({ contacts: JSON.parse(savedContacts) });
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContact = ({ name, number }) => {
     const newContact = {
